@@ -3,6 +3,8 @@ import serial
 import sys
 import glob
 import serial_functions as sf
+import threading as thread
+import time
 
 app = tk.CTk()
 app.title("Mini Serial Monitor")
@@ -12,7 +14,7 @@ tk.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", "
 tk.set_appearance_mode("light")
 read = False
 prova = "hey"
-ser = serial.Serial()
+ser = serial.Serial(timeout=1)
 
 def serial_connect(choice):
     ser.port = choice
@@ -20,7 +22,7 @@ def serial_connect(choice):
         ser.open()
     except BaseException as e:
         print('Failed to do something: ' + str(e))
-    print(ser)
+    print_screen(ser)
 
 def serial_baud(choice):
     ser.baudrate = int(choice)
@@ -28,26 +30,38 @@ def serial_baud(choice):
         ser.open()
     except BaseException as e:
         print('Failed to do something: ' + str(e))
-    print(ser)
+    print_screen(ser)
 
 def print_serial_list():
     print(sf.serial_ports())
 
 def read_messages():
-    #read = not read
+    global read
+    read = not read
     if read:
-        read = False
+        button.configure(text="Stop",fg_color="#ab0000",hover_color="#ab0000")
     else:
-        read = True
+        button.configure(text="Read",fg_color="#00ab4d",hover_color="#00ab4d")
     print(read)
+    thread.Thread(target=read_serial).start()
 
-
+def read_serial():
+    global read
+    while read:
+        #print("reading")
+        textbox.delete("0.0", "end")  # delete all text
+        textbox.insert("0.0", ser.readline())
+        time.sleep(200/1000)
 
 def optionmenu_callback(choice):
-    print("optionmenu dropdown clicked:", choice)
+    print_screen("optionmenu dropdown clicked:", choice)
 
 def checkbox_event():
-    print("checkbox toggled, current value:", check_csv_var.get())
+    print_screen("checkbox toggled, current value:", check_csv_var.get())
+
+def print_screen(str_to_print):
+    textbox_log.delete("0.0", "end")  # delete all text
+    textbox_log.insert("0.0", str_to_print)
 
 #layout
 
@@ -66,13 +80,21 @@ check_csv = tk.CTkCheckBox(setup_frame, text="CSV format", command=checkbox_even
                                      variable=check_csv_var, onvalue="on", offvalue="off")
 check_csv.grid(row=2, column=0, padx=20, pady=20, sticky="ew")
 
-button = tk.CTkButton(setup_frame, text="Read", command=read_messages)
+button = tk.CTkButton(setup_frame, text="Read", command=read_messages,fg_color="#00ab4d",hover_color="#00ab4d")
 button.grid(row=3, column=0, padx=20, pady=20, sticky="ew")
 #col2
 read_frame = tk.CTkFrame(app)
 read_frame.grid(row=0, column=1, padx=10, pady=(10, 0), sticky="nsew")
 
-textbox = tk.CTkTextbox(master=read_frame, width=400, corner_radius=0,font = ("Arial", 20))
+textbox = tk.CTkTextbox(master=read_frame, width=400, corner_radius=0,font = ("Arial", 20),fg_color="transparent")
 textbox.grid(row=0, column=1, sticky="nsew")
 textbox.insert("0.0", "Some example text!\n")
+
+#row 2
+log_frame = tk.CTkFrame(app)
+log_frame.grid(row=4, column=0, padx=10, pady=(10, 0), sticky="nsw",columnspan=2)
+textbox_log = tk.CTkTextbox(master=log_frame, width=700, corner_radius=0,font = ("Arial", 15),fg_color="transparent",wrap='char')
+textbox_log.grid(row=0, column=1, sticky="sw")
+textbox_log.insert("0.0", "Some example text!\n")
+
 app.mainloop()

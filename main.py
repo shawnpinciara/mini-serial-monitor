@@ -16,11 +16,10 @@ tk.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", "
 tk.set_appearance_mode("light")
 read: bool = False
 csv_option: bool = False
-prova: str = "hey"
 ser = serial.Serial(timeout=1)
 ser.port = "COM1"
 ser.baudrate = 9600
-scan_freq: int = 200
+scan_freq: int = 20
 
 def serial_port(choice):
     ser.port = choice
@@ -44,7 +43,7 @@ def read_messages():
     if len(ss.strip())!=0:
         set_scan_freq(ss)
     else:
-        set_scan_freq(200)
+        set_scan_freq(20)
     if read:
         button.configure(text="Stop",fg_color="#ab0000",hover_color="#ab0000")
         setup_frame.configure(border_width=3,border_color="#00ab4d")
@@ -75,16 +74,18 @@ def read_serial():
     global scan_freq
     while read:
         textbox.delete("0.0", "end")  # delete all text
-        if not csv_option:
-            textbox.insert("0.0", ser.readline())
-        else:
-            try:
-                lista = ser.readline().replace('\n','').replace('\t','').replace("'",'').split(',')
-                print_screen(lista)
-                for el in lista:
-                    textbox.insert("0.0", str(el) + "\n")
-            except BaseException as e:
-                print('Failed to do something: ' + str(e))
+        #csv_option = bool(check_csv_var.get())
+        #print(csv_option)
+        textbox.insert("0.0", ser.readline())
+        # if csv_option:
+        #     try:
+        #         lista = str(ser.readline()).replace('\n','').replace('\t','').replace("'",'').split(',')
+        #         for el in lista:
+        #             textbox.insert("0.0", str(el) + "\n")
+        #     except BaseException as e:
+        #         print('Failed to do something: ' + str(e))         
+        # else:
+        #     textbox.insert("0.0", ser.readline())
             
         time.sleep(int(scan_freq)/1000)
 

@@ -20,7 +20,7 @@ pip install -r requirements.txt  # Install all the libs.
 python main.py
 ```
 # Implementation:
-_Python_ with [_CustomTKinter_](https://github.com/TomSchimansky/CustomTkinter) and [_PySerial_](https://github.com/pyserial/pyserial), using _pyinstaller_ for distribution.
+_Python_ with [_CustomTKinter_](https://github.com/TomSchimansky/CustomTkinter) and [_PySerial_](https://github.com/pyserial/pyserial), using [_pyinstaller_](https://pyinstaller.org/en/stable/) for distribution.
 
 # Future implementation:
 - CSV beautify reader

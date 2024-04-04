@@ -20,10 +20,10 @@ pip install -r requirements.txt  # Install all the libs.
 python main.py
 ```
 # Implementation:
-_Python_ with _CustomTKinter_ and _pyinstaller_ for distribution.
-*NEEDED:* Someone who runs pyinstaller on MAC to do a OSX release
+_Python_ with [_CustomTKinter_](https://github.com/TomSchimansky/CustomTkinter) and [_PySerial_](https://github.com/pyserial/pyserial), using _pyinstaller_ for distribution.
 
 # Future implementation:
 - CSV beautify reader
 - Better serial sampling
 - Better sctring handling
+- Better distribution management
